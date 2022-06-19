@@ -2,6 +2,7 @@ module app
 
 using HTTP
 using Parameters
+using JSON
 
 
 @with_kw struct Invoice
@@ -20,17 +21,26 @@ Write to file if status if OK
 """
 function connect_to_api_and_save_invoice_pdf()
     url = "https://invoice-generator.com"
-    try
-        response = app.HTTP.post(url)
-        if response.status in [200, 201]
-            open("data/invoices/invoice0.pdf", "w") do f
-                write(f, response.body)
-            end
-        else
-            print("Bad response status $(response.status)")
+    # try
+    response = HTTP.post(
+        url,
+        ["Content-Type" => "application/json"],
+        body=JSON.json(
+            Dict(
+                "from" => "joris",
+                "to" => "helene"
+            )
+        )
+    )
+    if response.status in [200, 201]
+        open("data/invoices/invoice0.pdf", "w") do f
+            write(f, response.body)
         end
-    catch e
-        println("Exception\n", e)
+    else
+        print("Bad response status $(response.status)")
+        #     end
+        # catch e
+        #     println("Exception\n", e)
     end
 end
 
