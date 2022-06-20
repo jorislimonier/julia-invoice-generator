@@ -1,4 +1,4 @@
-# include("src/data.jl")
+include("src/data.jl")
 include("src/api.jl")
 
 function main()

@@ -10,5 +10,4 @@ For privacy reasons, my invoices have not been added to this repository. If you 
 - [API docs](https://invoice-generator.com/developers)
 
 ## TODO
-- Clean up code (ipynb)
 - Implement functions to add/modify data to existing CSV's

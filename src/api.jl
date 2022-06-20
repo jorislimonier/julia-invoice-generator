@@ -31,7 +31,9 @@ function get_invoice_info(order::data.DataFrames.DataFrameRow)
 
     # to
     customer_id = order["customer_id"]
-    invoice_info["to"] = string(customer_id)
+    customer_info = filter(row -> row["customer_id"] == customer_id, data.customers)[1, :]
+
+    invoice_info["to"] = customer_info["name"]
 
     # currency
     currency = order["currency"]
