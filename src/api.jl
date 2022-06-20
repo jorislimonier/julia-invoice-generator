@@ -3,6 +3,7 @@ module api
 using HTTP
 using Parameters
 using JSON
+include("data.jl")
 
 
 @with_kw struct Invoice
@@ -14,12 +15,51 @@ end
 
 eval_string(str) = eval(Meta.parse(str::String))
 
+function get_invoice_info(order::data.DataFrames.DataFrameRow)
+    invoice_info = Dict{Any,Any}()
+
+    # from is
+    invoice_info["from"] = "Joris LIMONIER"
+
+    # invoice_id
+    invoice_id = order["invoice_id"]
+    invoice_info["number"] = invoice_id
+
+    # date
+    date = order["date"]
+    invoice_info["date"] = date
+
+    # to
+    customer_id = order["customer_id"]
+    invoice_info["to"] = string(customer_id)
+
+    # currency
+    currency = order["currency"]
+    invoice_info["currency"] = currency
+
+    # products_id stores a list
+    products_id = api.eval_string(String(order["products_id"]))
+
+    items = []
+    for product_id in products_id
+        product = filter(row -> row["product_id"] == product_id, data.products)[1, :]
+        name = product["name"]
+        quantity = product["quantity"]
+        unit_cost = product["unit_cost"]
+        push!(items, Dict("name" => name, "quantity" => quantity, "unit_cost" => unit_cost))
+    end
+    invoice_info["items"] = items
+    invoice_info["notes"] = "Thank you for your order."
+
+    return invoice_info
+end
+
 
 """
 Sends a request and handle response.
 Write to file if status if OK
 """
-function connect_to_api_and_save_invoice_pdf(invoice_info::Dict{Any, Any}, invoice_id::Int)
+function connect_to_api_and_save_invoice_pdf(invoice_info::Dict{Any,Any}, invoice_id::Int)
     url = "https://invoice-generator.com"
     try
         # invoice_info["from"] = "Joris LIMONIER"
