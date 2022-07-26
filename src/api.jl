@@ -19,7 +19,7 @@ function get_invoice_info(order::data.DataFrames.DataFrameRow)
     invoice_info = Dict{Any,Any}()
 
     # from is
-    invoice_info["from"] = "Joris LIMONIER"
+    invoice_info["from"] = "Joris LIMONIER,\nregistred trader,\n22 rue Mathias Saur, L-8042 Strassen, LUXEMBOURG"
 
     # invoice_id
     invoice_id = order["invoice_id"]
